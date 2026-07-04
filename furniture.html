@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>木语 | 实木家具 · 把森林带回家</title>
+<style>
+  /* ===== Reset & Base ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --wood: #8B6914;
+    --wood-dark: #5C4A1E;
+    --cream: #FDF8F0;
+    --warm-white: #FFFAF5;
+    --charcoal: #2D2A26;
+    --text: #3D3832;
+    --text-light: #6B635A;
+    --accent: #D4A853;
+    --border: #E8DDD0;
+    --shadow-sm: 0 1px 3px rgba(45,42,38,0.08);
+    --shadow-md: 0 4px 24px rgba(45,42,38,0.10);
+    --shadow-lg: 0 12px 48px rgba(45,42,38,0.12);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+    color: var(--text);
+    background: var(--warm-white);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== Navigation ===== */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,250,245,0.85);
+    backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 1px solid transparent;
+    transition: var(--transition);
+  }
+  .nav.scrolled { border-bottom-color: var(--border); box-shadow: var(--shadow-sm); }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 32px;
+  }
+  .logo { font-size: 1.5rem; font-weight: 700; color: var(--wood-dark); letter-spacing: -0.02em; }
+  .logo span { color: var(--wood); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--text); font-size: 0.95rem; font-weight: 500; transition: var(--transition); }
+  .nav-links a:hover { color: var(--wood); }
+  .nav-cta {
+    background: var(--wood); color: white; border: none;
+    padding: 10px 24px; border-radius: 24px; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: var(--transition);
+  }
+  .nav-cta:hover { background: var(--wood-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139,105,20,0.35); }
+
+  /* ===== Hero ===== */
+  .hero {
+    min-height: 100vh; display: flex; align-items: center;
+    background: linear-gradient(165deg, #FDF8F0 0%, #F5EDE0 40%, #EDE0D0 100%);
+    padding: 120px 32px 80px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ""; position: absolute; top: -30%; right: -15%;
+    width: 700px; height: 700px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,168,83,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: ""; position: absolute; bottom: -5%; left: -10%;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(139,105,20,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    position: relative; z-index: 1;
+  }
+  .hero-tag {
+    display: inline-block; background: rgba(139,105,20,0.1); color: var(--wood-dark);
+    padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+    letter-spacing: 0.04em; margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 5vw, 3.8rem); font-weight: 800;
+    color: var(--charcoal); line-height: 1.2; margin-bottom: 24px; letter-spacing: -0.03em;
+  }
+  .hero h1 em { font-style: normal; color: var(--wood); }
+  .hero-desc {
+    font-size: 1.15rem; color: var(--text-light); margin-bottom: 40px; max-width: 460px;
+  }
+  .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px; border-radius: 30px; font-size: 1rem; font-weight: 600;
+    text-decoration: none; cursor: pointer; transition: var(--transition); border: none;
+  }
+  .btn-primary { background: var(--wood); color: white; }
+  .btn-primary:hover { background: var(--wood-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,105,20,0.35); }
+  .btn-outline { background: transparent; color: var(--wood-dark); border: 2px solid var(--border); }
+  .btn-outline:hover { border-color: var(--wood); background: rgba(139,105,20,0.04); }
+  .hero-stats { display: flex; gap: 48px; margin-top: 56px; }
+  .stat-value { font-size: 2rem; font-weight: 800; color: var(--wood-dark); line-height: 1; }
+  .stat-label { font-size: 0.85rem; color: var(--text-light); margin-top: 4px; }
+
+  .hero-visual {
+    position: relative; display: flex; align-items: center; justify-content: center;
+  }
+  .hero-img-main {
+    width: 100%; max-width: 500px; aspect-ratio: 4/3;
+    background: linear-gradient(135deg, #E8D5B0 0%, #D4B896 30%, #C9A87C 60%, #B8956A 100%);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 6rem; position: relative;
+  }
+  .hero-img-main::after {
+    content: "🪑"; position: absolute; font-size: 5rem;
+  }
+  .hero-badge {
+    position: absolute; bottom: -16px; right: -16px;
+    background: white; padding: 16px 24px; border-radius: var(--radius);
+    box-shadow: var(--shadow-md); text-align: center;
+  }
+  .hero-badge .price { font-size: 1.6rem; font-weight: 800; color: var(--wood); }
+  .hero-badge .tag { font-size: 0.8rem; color: var(--text-light); }
+
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  .hero-floating-card {
+    position: absolute; top: 10%; left: -30px;
+    background: white; padding: 12px 20px; border-radius: var(--radius);
+    box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 12px;
+    animation: float 4s ease-in-out infinite;
+  }
+  .hero-floating-card .dot { width: 10px; height: 10px; background: #4CAF50; border-radius: 50%; }
+  .hero-floating-card span { font-size: 0.9rem; font-weight: 600; white-space: nowrap; }
+
+  /* ===== Section Common ===== */
+  section { padding: 100px 32px; }
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+  .section-header { text-align: center; margin-bottom: 64px; }
+  .section-header h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 800; color: var(--charcoal);
+    margin-bottom: 16px; letter-spacing: -0.02em;
+  }
+  .section-header p { color: var(--text-light); font-size: 1.1rem; max-width: 560px; margin: 0 auto; }
+
+  /* ===== Products Grid ===== */
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; }
+  .product-card {
+    background: white; border-radius: var(--radius-lg); overflow: hidden;
+    box-shadow: var(--shadow-sm); transition: var(--transition); cursor: pointer;
+  }
+  .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+  .product-img {
+    height: 260px; position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; font-size: 4rem;
+    color: white;
+  }
+  .product-img.sofa { background: linear-gradient(135deg, #C9B99A 0%, #A89478 100%); }
+  .product-img.table { background: linear-gradient(135deg, #B8956A 0%, #8B6914 100%); }
+  .product-img.chair { background: linear-gradient(135deg, #D4C4A8 0%, #B8A080 100%); }
+  .product-img.bed   { background: linear-gradient(135deg, #E0CFB5 0%, #C4A882 100%); }
+  .product-img.cabinet { background: linear-gradient(135deg, #C8B898 0%, #A08060 100%); }
+  .product-img.shelf { background: linear-gradient(135deg, #D4B896 0%, #B09070 100%); }
+
+  .product-badge {
+    position: absolute; top: 16px; left: 16px;
+    background: var(--wood); color: white; padding: 4px 14px; border-radius: 14px;
+    font-size: 0.8rem; font-weight: 700;
+  }
+  .product-badge.new { background: #4CAF50; }
+  .product-badge.hot { background: #E85D3A; }
+  .product-info { padding: 24px; }
+  .product-info h3 { font-size: 1.2rem; font-weight: 700; color: var(--charcoal); margin-bottom: 6px; }
+  .product-info .subtitle { font-size: 0.9rem; color: var(--text-light); margin-bottom: 12px; }
+  .product-info .features { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .product-info .feature-tag {
+    font-size: 0.78rem; background: var(--cream); color: var(--wood-dark);
+    padding: 4px 12px; border-radius: 12px; font-weight: 500;
+  }
+  .product-footer { display: flex; align-items: center; justify-content: space-between; }
+  .product-price .current { font-size: 1.4rem; font-weight: 800; color: var(--wood); }
+  .product-price .original { font-size: 0.85rem; color: #BBB; text-decoration: line-through; margin-left: 8px; }
+  .product-footer .btn-sm {
+    background: var(--wood); color: white; border: none;
+    padding: 8px 20px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: var(--transition);
+  }
+  .product-footer .btn-sm:hover { background: var(--wood-dark); }
+
+  /* ===== Features ===== */
+  #features { background: var(--cream); }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px; }
+  .feature-card {
+    text-align: center; padding: 40px 28px;
+    background: white; border-radius: var(--radius-lg); transition: var(--transition);
+  }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .feature-icon { font-size: 2.8rem; margin-bottom: 20px; display: block; }
+  .feature-card h3 { font-size: 1.15rem; font-weight: 700; color: var(--charcoal); margin-bottom: 10px; }
+  .feature-card p { font-size: 0.92rem; color: var(--text-light); }
+
+  /* ===== Testimonials ===== */
+  .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; }
+  .testimonial-card {
+    background: white; padding: 36px; border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm); transition: var(--transition);
+    position: relative;
+  }
+  .testimonial-card::before { content: """; position: absolute; top: 20px; left: 28px; font-size: 4rem; color: rgba(139,105,20,0.1); font-family: Georgia, serif; line-height: 1; pointer-events: none; }
+  .testimonial-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .testimonial-text { font-size: 1rem; color: var(--text); margin-bottom: 20px; position: relative; z-index: 1; line-height: 1.8; }
+  .testimonial-author { display: flex; align-items: center; gap: 12px; }
+  .author-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: white; font-weight: 700; flex-shrink: 0; }
+  .author-avatar.a1 { background: #E8A87C; }
+  .author-avatar.a2 { background: #95B8D1; }
+  .author-avatar.a3 { background: #B8C9A8; }
+  .author-name { font-weight: 700; color: var(--charcoal); font-size: 0.95rem; }
+  .author-role { font-size: 0.82rem; color: var(--text-light); }
+  .stars { color: #E8B830; font-size: 0.9rem; margin-bottom: 4px; }
+
+  /* ===== CTA ===== */
+  #cta {
+    background: linear-gradient(135deg, var(--wood-dark) 0%, var(--wood) 100%);
+    color: white; text-align: center; position: relative; overflow: hidden;
+  }
+  #cta::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  #cta .section-inner { position: relative; z-index: 1; }
+  #cta h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: 16px; }
+  #cta p { font-size: 1.1rem; opacity: 0.85; max-width: 560px; margin: 0 auto 36px; }
+  #cta .btn { background: white; color: var(--wood-dark); font-size: 1.05rem; padding: 16px 40px; }
+  #cta .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+  .cta-note { margin-top: 20px; font-size: 0.85rem; opacity: 0.6; }
+
+  /* ===== Footer ===== */
+  footer {
+    background: var(--charcoal); color: rgba(255,255,255,0.6);
+    padding: 48px 32px 32px; font-size: 0.9rem;
+  }
+  .footer-inner { max-width: 1200px; margin: 0 auto; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 40px; }
+  .footer-col h4 { color: white; font-size: 1rem; margin-bottom: 16px; font-weight: 700; }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 8px; }
+  .footer-col ul li a { color: rgba(255,255,255,0.5); text-decoration: none; transition: var(--transition); }
+  .footer-col ul li a:hover { color: var(--accent); }
+  .footer-brand .logo { font-size: 1.4rem; margin-bottom: 12px; color: white; display: block; }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 48px; text-align: center; }
+    .hero-desc { max-width: 100%; }
+    .hero-stats { justify-content: center; }
+    .hero-btns { justify-content: center; }
+    .hero-visual { order: -1; }
+    .hero-floating-card { display: none; }
+    .hero-badge { right: 0; }
+    .nav-links { display: none; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    section { padding: 60px 20px; }
+  }
+
+  @media (max-width: 480px) {
+    .footer-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== Navigation ===== -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="logo">木<span>语</span></a>
+    <ul class="nav-links">
+      <li><a href="#products">产品系列</a></li>
+      <li><a href="#features">品质承诺</a></li>
+      <li><a href="#testimonials">用户口碑</a></li>
+    </ul>
+    <button class="nav-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">立即选购</button>
+  </div>
+</nav>
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <span class="hero-tag">✦ 2026 夏季新品上市</span>
+      <h1>把<em>森林</em>的呼吸<br>带进你的家</h1>
+      <p class="hero-desc">
+        精选北美黑胡桃木与白橡木，德国精密工艺，经 72 道工序打磨。每一件家具，都是可以传家的艺术品。
+      </p>
+      <div class="hero-btns">
+        <a href="#products" class="btn btn-primary">🛋️ 探索系列</a>
+        <a href="#features" class="btn btn-outline">了解更多 →</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-value">12,800+</div><div class="stat-label">幸福家庭的选择</div></div>
+        <div><div class="stat-value">15年</div><div class="stat-label">质保承诺</div></div>
+        <div><div class="stat-value">4.9</div><div class="stat-label">用户评分</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-img-main"></div>
+      <div class="hero-floating-card">
+        <div class="dot"></div>
+        <span>已有 328 人今日下单</span>
+      </div>
+      <div class="hero-badge">
+        <div class="tag">起售价</div>
+        <div class="price">¥2,999</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Products ===== -->
+<section id="products">
+  <div class="section-inner">
+    <div class="section-header">
+      <h2>🏠 热销系列</h2>
+      <p>每一件家具都经过精心设计，兼顾美学与实用。找到最适合你家的那一件。</p>
+    </div>
+    <div class="products-grid">
+
+      <!-- 1. 沙发 -->
+      <div class="product-card">
+        <div class="product-img sofa">
+          <span class="product-badge hot">🔥 热销</span>
+          🛋️
+        </div>
+        <div class="product-info">
+          <h3>云栖沙发 · Cloud Nest</h3>
+          <p class="subtitle">北美白橡木框架 · 高密度回弹海绵</p>
+          <div class="features">
+            <span class="feature-tag">三防面料</span>
+            <span class="feature-tag">可拆洗</span>
+            <span class="feature-tag">L型/直排可选</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="current">¥5,999</span>
+              <span class="original">¥8,999</span>
+            </div>
+            <button class="btn-sm">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 餐桌 -->
+      <div class="product-card">
+        <div class="product-img table">
+          <span class="product-badge new">✨ 新品</span>
+          🍽️
+        </div>
+        <div class="product-info">
+          <h3>磐石餐桌 · Bedrock</h3>
+          <p class="subtitle">黑胡桃木整板 · 德国榫卯工艺</p>
+          <div class="features">
+            <span class="feature-tag">整板无拼接</span>
+            <span class="feature-tag">可拉伸</span>
+            <span class="feature-tag">4-8人</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="current">¥8,999</span>
+              <span class="original">¥12,999</span>
+            </div>
+            <button class="btn-sm">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. 椅子 -->
+      <div class="product-card">
+        <div class="product-img chair">
+          <span class="product-badge hot">🔥 热销</span>
+          🪑
+        </div>
+        <div class="product-info">
+          <h3>曲韵餐椅 · Curve</h3>
+          <p class="subtitle">人体工学曲线 · 黑胡桃木 + 真皮</p>
+          <div class="features">
+            <span class="feature-tag">意大利头层牛皮</span>
+            <span class="feature-tag">人体工学</span>
+            <span class="feature-tag">6色可选</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="current">¥2,999</span>
+              <span class="original">¥4,299</span>
+            </div>
+            <button class="btn-sm">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. 床 -->
+      <div class="product-card">
+        <div class="product-img bed">
+          <span class="product-badge new">✨ 新品</span>
+          🛏️
+        </div>
+        <div class="product-info">
+          <h3>栖心床 · Serenity</h3>
+          <p class="subtitle">悬浮设计 · 感应夜灯 · 静音骨架</p>
+          <div class="features">
+            <span class="feature-tag">悬浮灯带</span>
+            <span class="feature-tag">静音排骨架</span>
+            <span class="feature-tag">1.5m/1.8m</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="current">¥9,999</span>
+              <span class="original">¥15,999</span>
+            </div>
+            <button class="btn-sm">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. 柜子 -->
+      <div class="product-card">
+        <div class="product-img cabinet">
+          🗄️
+        </div>
+        <div class="product-info">
+          <h3>藏山边柜 · Hidden Mountain</h3>
+          <p class="subtitle">黑胡桃木 · 推拉门 · 内置收纳系统</p>
+          <div class="features">
+            <span class="feature-tag">推拉门</span>
+            <span class="feature-tag">实木滑轨</span>
+            <span class="feature-tag">多层分区</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="current">¥4,599</span>
+              <span class="original">¥6,499</span>
+            </div>
+            <button class="btn-sm">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. 书架 -->
+      <div class="product-card">
+        <div class="product-img shelf">
+          📚
+        </div>
+        <div class="product-info">
+          <h3>叠浪书架 · Wave</h3>
+          <p class="subtitle">模块化设计 · 自由组合 · 承重 50kg/层</p>
+          <div class="features">
+            <span class="feature-tag">模块化</span>
+            <span class="feature-tag">自由组合</span>
+            <span class="feature-tag">5层/7层</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="current">¥3,299</span>
+              <span class="original">¥4,599</span>
+            </div>
+            <button class="btn-sm">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== Features ===== -->
+<section id="features">
+  <div class="section-inner">
+    <div class="section-header">
+      <h2>🌳 为什么选择木语？</h2>
+      <p>我们不只是在卖家具，我们在传递一种生活方式。</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🪵</span>
+        <h3>FSC 认证实木</h3>
+        <p>所有木材来自可持续管理的北美森林，每块木料都有溯源证书，纹理独一无二。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔧</span>
+        <h3>德国精密工艺</h3>
+        <p>引进德国 HOMAG 生产线，榫卯精度达 0.1mm，不使用一颗螺丝也能稳如磐石。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🛡️</span>
+        <h3>15 年质保</h3>
+        <p>我们对每一件产品都有信心。结构件质保 15 年，免费上门维护，终身技术支持。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎨</span>
+        <h3>千人千面定制</h3>
+        <p>提供 20+ 木材、30+ 涂装色、50+ 面料可选，德国设计师 1v1 为你量身定制方案。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Testimonials ===== -->
+<section id="testimonials">
+  <div class="section-inner">
+    <div class="section-header">
+      <h2>💬 他们怎么说</h2>
+      <p>来自 12,800+ 个家庭真实评价。</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">
+          "云栖沙发搬进客厅的那一刻，整个家的气质都变了。木头的温润触感是任何板材都无法替代的，每天回家第一件事就是窝在上面。"
+        </p>
+        <div class="testimonial-author">
+          <div class="author-avatar a1">李</div>
+          <div>
+            <div class="author-name">李女士</div>
+            <div class="author-role">室内设计师 · 北京</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">
+          "磐石餐桌整板纹路美得让人窒息。家里老人说这桌子能用三代人。榫卯结构严丝合缝，真正的好东西。"
+        </p>
+        <div class="testimonial-author">
+          <div class="author-avatar a2">王</div>
+          <div>
+            <div class="author-name">王先生</div>
+            <div class="author-role">自由摄影师 · 成都</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">
+          "装修时对比了十几家，最后选了木语的全屋定制。设计师很耐心，改了 5 版方案，装完效果超出预期。"
+        </p>
+        <div class="testimonial-author">
+          <div class="author-avatar a3">陈</div>
+          <div>
+            <div class="author-name">陈女士</div>
+            <div class="author-role">互联网产品经理 · 深圳</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section id="cta">
+  <div class="section-inner">
+    <h2>🎁 这个夏天，给家一次焕新</h2>
+    <p>即日起至 7 月 31 日，全场 6 折起 + 免费上门量尺设计。更有老客户专属以旧换新补贴。</p>
+    <a href="#" class="btn">🛒 立即选购</a>
+    <p class="cta-note">📍 全国 38 城均有体验店 · 预约免费参观</p>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col footer-brand">
+        <span class="logo">木<span>语</span></span>
+        <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;">把森林带回家。<br>Bring the forest home.</p>
+      </div>
+      <div class="footer-col">
+        <h4>产品</h4>
+        <ul>
+          <li><a href="#">客厅系列</a></li>
+          <li><a href="#">餐厅系列</a></li>
+          <li><a href="#">卧室系列</a></li>
+          <li><a href="#">书房系列</a></li>
+          <li><a href="#">全屋定制</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>服务</h4>
+        <ul>
+          <li><a href="#">免费量尺设计</a></li>
+          <li><a href="#">送货安装</a></li>
+          <li><a href="#">质保政策</a></li>
+          <li><a href="#">以旧换新</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>关于</h4>
+        <ul>
+          <li><a href="#">品牌故事</a></li>
+          <li><a href="#">工艺展示</a></li>
+          <li><a href="#">门店查询</a></li>
+          <li><a href="#">加入我们</a></li>
+          <li><a href="#">联系我们</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 木语家具 Muyu Furniture. All rights reserved.</span>
+      <span>京ICP备2026XXXXXXXX号</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== JS ===== -->
+<script>
+  // Nav scroll effect
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // Smooth reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.product-card, .feature-card, .testimonial-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+
+  // Product card click
+  document.querySelectorAll('.product-card .btn-sm').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const name = btn.closest('.product-card').querySelector('h3').textContent;
+      alert(`🎉 感谢关注！\n\n您正在查看：${name}\n\n我们的家居顾问将在 24 小时内与您联系，为您提供专属方案。\n\n📞 或直接拨打：400-XXX-XXXX`);
+    });
+  });
+
+  // CTA button
+  document.querySelector('#cta .btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    alert('🎁 夏季焕新活动已开启！\n\n✅ 全场 6 折起\n✅ 免费上门量尺\n✅ 老客户以旧换新\n\n📞 咨询热线：400-XXX-XXXX\n📍 全国 38 城体验店欢迎您');
+  });
+</script>
+
+</body>
+</html>
